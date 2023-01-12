@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <vector>
 #include <random>
-#include <csignal>
 
 char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'},
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
@@ -193,17 +192,50 @@ void moveLoop() {
 void deathScreen() {
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
-        arena[14][i] = '-';
+        arena[15][i] = '-';
     }
-    for (int i = 5; i < 15; i++) {
+    for (int i = 5; i < 16; i++) {
         arena[i][31] = 'l';
         arena[i][17] = 'l';
     }
-    for (int i = 6; i < 14; i++) {
+    for (int i = 6; i < 15; i++) {
         for (int j = 18; j < 31; j++) {
             arena[i][j] = ' ';
         }
     }
+
+    int offset = 20;
+    std::string s = "You died!";
+    for (int i = offset; i < (s.length() + offset); i++) {
+        arena[7][i] = s[i - offset];
+    }
+
+    offset = 19;
+    s = "Your score:";
+    for (int i = offset; i < (s.length() + offset); i++) {
+        arena[9][i] = s[i - offset];
+    }
+
+    s = std::to_string(score);
+    offset = 0;
+    int i = 0;
+    for (char c : s) {
+        i++;
+        if (i % 2 != 0) {
+            offset--;
+        }
+    }
+    offset += 25;
+    for (int i = offset; i < (s.length() + offset); i++) {
+        arena[11][i] = s[i - offset];
+    }
+
+    offset = 19;
+    s = "R to Retry!";
+    for (int i = offset; i < (s.length() + offset); i++) {
+        arena[13][i] = s[i-offset];
+    }
+
     printArena();
 }
 
