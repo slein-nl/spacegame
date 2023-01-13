@@ -26,6 +26,7 @@ char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', '
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
                             {'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'}};
 
+bool stop = false;
 int score = 0;
 int fuel = 800;
 int direction ='d';
@@ -175,6 +176,7 @@ void movePlayer(char c) {
     }
     if (c == 'c') {
         end = true;
+        stop  = true;
     }
 }
 
@@ -190,6 +192,7 @@ void moveLoop() {
 }
 
 void deathScreen() {
+    if (stop == true) return;
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
         arena[15][i] = '-';
@@ -237,6 +240,14 @@ void deathScreen() {
     }
 
     printArena();
+
+    while (true) {
+        sleep(1);
+        int ch = getchar();
+        if (ch == 'r' || ch == 'R') /*retry function*/;
+        if (ch == 'c' || ch == 'C') return; 
+    }
+
 }
 
 int main() {
@@ -247,8 +258,7 @@ int main() {
     std::thread t3(moveLoop);
     checkCollision();
     deathScreen();
-    sleep(5000);
+    endPoint:
     system("stty cooked"); 
     return 0;
 }
-
