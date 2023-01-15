@@ -31,6 +31,8 @@ int score = 0;
 int fuel = 800;
 int direction ='d';
 void movePlayer(char c);
+void retry();
+void startGame();
 
 void printArena() {
     system("clear");
@@ -129,6 +131,7 @@ void gameLoop() {
 
 void checkCollision() {
     while (true) {
+        if (end == true) break;
         sleep(1);
         if (enemyVec.size() != 0) {
             for (Entity &e : enemyVec) {
@@ -145,7 +148,6 @@ void checkCollision() {
                 p.render();
             }
         }
-        if (end == true) break;
     }
 }
 
@@ -191,8 +193,8 @@ void moveLoop() {
     }
 }
 
-void deathScreen() {
-    if (stop == true) return;
+char deathScreen() {
+    if (stop == true) return 'C';
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
         arena[15][i] = '-';
@@ -241,24 +243,54 @@ void deathScreen() {
 
     printArena();
 
+    char option;
     while (true) {
         sleep(1);
         int ch = getchar();
-        if (ch == 'r' || ch == 'R') /*retry function*/;
-        if (ch == 'c' || ch == 'C') return; 
+        if (ch == 'c' || ch == 'C' || ch == 'r' || ch == 'R') {
+            option = ch;
+            break;
+        }
     }
-
+    return option;
 }
 
-int main() {
-    system("stty raw");
+void startGame() {   
     p.render();
     std::thread t1(gameLoop);
     std::thread t2(inputLoop);
     std::thread t3(moveLoop);
     checkCollision();
-    deathScreen();
-    endPoint:
+    char c = deathScreen();
+    if (c == 'C' || c == 'c') return;
+    if (c == 'r' || c == 'R') {
+        retry();
+    }
+}
+
+void retry() {  
+    for (int i = 1; i < 19; i++) {
+        for (int j = 1; j < 49; j++) {
+            arena[i][j] = ' ';
+        }
+    }
+    stop = false;
+    score = 0;
+    fuel = 800;
+    direction = 'd';
+    p.derender();
+    p.x = 15;
+    p.y = 15;
+    enemyVec.erase(enemyVec.begin(), enemyVec.end());
+    pointVec.erase(pointVec.begin(), pointVec.end());
+    end = false;
+    startGame();
+}
+
+
+int main() {
+    system("stty raw");
+    startGame();
     system("stty cooked"); 
     return 0;
 }
