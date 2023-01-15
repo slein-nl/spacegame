@@ -74,8 +74,6 @@ void sleep(int t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(t));
 }
 
-
-
 void inputLoop() {
     while(true) {
         if (end == true) break;
@@ -287,7 +285,6 @@ void retry() {
     end = false;
     startGame();
 }
-
 
 int main() {
     system("stty raw");
