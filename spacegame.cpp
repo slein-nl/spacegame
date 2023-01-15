@@ -26,10 +26,33 @@ char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', '
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
                             {'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'}};
 
+struct Entity {
+    int x;
+    int y;
+    char s;  
+
+    void render() {
+        arena[y][x] = s;
+    }
+    void derender() {
+        arena[y][x] = ' ';
+    }
+
+    Entity(int ix, int iy, char ic) {
+        x = ix;
+        y = iy;
+        s = ic;
+    }
+};
+
 bool stop = false;
 int score = 0;
 int fuel = 800;
 int direction ='d';
+bool end = false;
+Entity p(15, 15, '@');
+std::vector<Entity> enemyVec; 
+std::vector<Entity> pointVec;
 void movePlayer(char c);
 void retry();
 void startGame();
@@ -51,29 +74,7 @@ void sleep(int t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(t));
 }
 
-struct Entity {
-    int x;
-    int y;
-    char s;  
 
-    void render() {
-        arena[y][x] = s;
-    }
-    void derender() {
-        arena[y][x] = ' ';
-    }
-
-    Entity(int ix, int iy, char ic) {
-        x = ix;
-        y = iy;
-        s = ic;
-    }
-};
-
-Entity p(15, 15, '@');
-std::vector<Entity> enemyVec; 
-std::vector<Entity> pointVec;
-bool end = false;
 
 void inputLoop() {
     while(true) {
