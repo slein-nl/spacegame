@@ -262,9 +262,7 @@ void startGame() {
     checkCollision();
     char c = deathScreen();
     if (c == 'C' || c == 'c') return;
-    if (c == 'r' || c == 'R') {
-        retry();
-    }
+    if (c == 'r' || c == 'R') retry();
 }
 
 void retry() {  
