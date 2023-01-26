@@ -29,7 +29,6 @@ char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', '
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
                             {'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'}};
 
-
 struct Entity {
     int x;
     int y;
@@ -128,8 +127,8 @@ void gameLoop() {
             enemyVec.push_back(Entity(48, enemyDistr(gen), 'X'));
             enemyVec.back().render();
             enemyTimer = 0;
+            enemyTimer++;
         }
-        else enemyTimer++;
         
         if (pointTimer == 2) {
             pointVec.push_back(Entity(pointDistr(gen), pointDistrVert(gen), 'O'));
