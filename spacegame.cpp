@@ -47,7 +47,7 @@ struct Entity {
 
 bool stop = false;
 int score = 0;
-int fuel = 800;
+int fuel = 300;
 int direction ='d';
 bool end = false;
 Entity p(15, 15, '@');
@@ -58,7 +58,8 @@ void retry();
 void startGame();
 
 void printArena() {
-    system("clear");
+    printf("\033[2J");
+    printf("\033[H");
     std::cout << "Grab the fuel! (O) | WASD to move | C to quit |"; 
     for (int i = 0; i < 20; i++) {
         std::cout << "\r\n";
@@ -141,7 +142,7 @@ void checkCollision() {
         } 
         for (int i = 0; i < pointVec.size(); i++) {
             if (pointVec[i].x == p.x && pointVec[i].y == p.y) {
-                fuel += 200;
+                fuel += 60;
                 pointVec[i].derender();
                 pointVec.erase(pointVec.begin()+i);
                 p.render();
@@ -185,7 +186,7 @@ void moveLoop() {
     while (true) {
         if (end == true) break;
         sleep(100);
-        fuel -= 10;
+        fuel -= 3;
         movePlayer(direction);
         printArena();
         if (fuel <= 0) end = true;
