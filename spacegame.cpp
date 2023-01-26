@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <vector>
 #include <random>
+#include <termios.h>
+#include <unistd.h>
+#include <signal.h>
 
 char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'},
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
@@ -25,6 +28,7 @@ char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', '
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
                             {'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'}};
+
 
 struct Entity {
     int x;
@@ -51,11 +55,24 @@ int fuel = 300;
 int direction ='d';
 bool end = false;
 Entity p(15, 15, '@');
+struct termios tty;
+struct termios ttyOld;
 std::vector<Entity> enemyVec; 
 std::vector<Entity> pointVec;
 void movePlayer(char c);
 void retry();
 void startGame();
+
+void rawMode() {
+    tcgetattr(STDIN_FILENO, &ttyOld);    
+    tcgetattr(STDIN_FILENO, &tty);    
+    tty.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+
+void cookedMode() {
+    tcsetattr(STDIN_FILENO, TCSANOW,  &ttyOld);
+}
 
 void printArena() {
     printf("\033[2J");
@@ -255,6 +272,7 @@ char deathScreen() {
     return option;
 }
 
+
 void startGame() {   
     p.render();
     std::thread t1(gameLoop);
@@ -286,8 +304,8 @@ void retry() {
 }
 
 int main() {
-    system("stty raw");
+    rawMode();
     startGame();
-    system("stty cooked"); 
+    cookedMode();
     return 0;
 }
