@@ -6,7 +6,6 @@
 #include <random>
 #include <termios.h>
 #include <unistd.h>
-#include <signal.h>
 
 char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'},
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
@@ -210,6 +209,7 @@ void moveLoop() {
 }
 
 char deathScreen() {
+    sleep(80);
     if (stop == true) return 'C';
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
@@ -291,7 +291,7 @@ void retry() {
     }
     stop = false;
     score = 0;
-    fuel = 800;
+    fuel = 300;
     direction = 'd';
     p.derender();
     p.x = 15;
