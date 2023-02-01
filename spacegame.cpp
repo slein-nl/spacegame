@@ -63,7 +63,7 @@ void startGame();
 
 void rawMode() {
     tcgetattr(STDIN_FILENO, &ttyOld);    
-    tcgetattr(STDIN_FILENO, &tty);    
+    tty = ttyOld;
     tty.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 }
@@ -193,7 +193,7 @@ void movePlayer(char c) {
     }
     if (c == 'c') {
         end = true;
-        stop  = true;
+        stop = true;
     }
 }
 
