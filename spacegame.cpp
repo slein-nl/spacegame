@@ -90,16 +90,10 @@ void sleep(int t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(t));
 }
 
-void inputLoop() {
-    while(true) {
-        if (end == true) break;
-        direction = getchar();
-    }
-}
-
 void gameLoop() {
     int pointTimer = 2;
     int enemyTimer = 1;
+    int enemyActivityTimer = 0;
     // arcane random generator shit
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -108,39 +102,57 @@ void gameLoop() {
     std::uniform_int_distribution<int> pointDistrVert(1, 18);
 
     while(true) {       
-        sleep(700);
+        // player movement loop
         if (end == true) break;
-        for (int i = 0; i < enemyVec.size(); i++) {
-            if (enemyVec[i].x == 1) {
-                enemyVec[i].derender();
-                enemyVec.erase(enemyVec.begin()+i);
+        sleep(100);
+        fuel -= 3;
+        movePlayer(direction);
+        if (fuel <= 0) end = true;
+
+        if (enemyActivityTimer == 6) {
+            // enemy activity
+            if (end == true) break;
+            for (int i = 0; i < enemyVec.size(); i++) {
+                if (enemyVec[i].x == 1) {
+                    enemyVec[i].derender();
+                    enemyVec.erase(enemyVec.begin()+i);
+                }
             }
-        }
-        for (int i = 0; i < enemyVec.size(); i++) {
-            enemyVec[i].derender();
-            enemyVec[i].x--;
-            enemyVec[i].render();  
-        }
+            for (int i = 0; i < enemyVec.size(); i++) {
+                enemyVec[i].derender();
+                enemyVec[i].x--;
+                enemyVec[i].render();  
+            }
         
-        if (enemyTimer == 1) {
-            enemyVec.push_back(Entity(48, enemyDistr(gen), 'X'));
-            enemyVec.back().render();
-            enemyTimer = 0;
-            enemyTimer++;
-        }
+            if (enemyTimer == 1) {
+                enemyVec.push_back(Entity(48, enemyDistr(gen), 'X'));
+                enemyVec.back().render();
+                enemyTimer = 0;
+                enemyTimer++;
+            }
         
-        if (pointTimer == 2) {
-            pointVec.push_back(Entity(pointDistr(gen), pointDistrVert(gen), 'O'));
-            pointVec.back().render();
-            pointTimer = 0;
-        }
-        else pointTimer++;
+            if (pointTimer == 2) {
+                pointVec.push_back(Entity(pointDistr(gen), pointDistrVert(gen), 'O'));
+                pointVec.back().render();
+                pointTimer = 0;
+            }
+            else pointTimer++;
         
-        for (int i = 0; i < pointVec.size(); i++) {
-            pointVec[i].render();
+            for (int i = 0; i < pointVec.size(); i++) {
+                pointVec[i].render();
+            }
+            score++;
+            enemyActivityTimer = 0;
         }
-        score++;
+        enemyActivityTimer++;
         printArena(); 
+    }
+}
+
+void inputLoop() {
+    while(true) {
+        if (end == true) break;
+        direction = getchar();
     }
 }
 
@@ -197,17 +209,6 @@ void movePlayer(char c) {
     }
 }
 
-void moveLoop() {
-    while (true) {
-        if (end == true) break;
-        sleep(100);
-        fuel -= 3;
-        movePlayer(direction);
-        printArena();
-        if (fuel <= 0) end = true;
-    }
-}
-
 char deathScreen() {
     sleep(80);
     if (stop == true) return 'C';
@@ -258,7 +259,6 @@ char deathScreen() {
     }
 
     printArena();
-
     char option;
     while (true) {
         sleep(1);
@@ -276,7 +276,6 @@ void startGame() {
     p.render();
     std::thread t1(gameLoop);
     std::thread t2(inputLoop);
-    std::thread t3(moveLoop);
     checkCollision();
     char c = deathScreen();
     if (c == 'C' || c == 'c') return;
