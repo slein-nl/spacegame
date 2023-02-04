@@ -61,6 +61,15 @@ void movePlayer(char c);
 void retry();
 void startGame();
 
+bool checkStdin() {
+    fd_set set;
+    FD_ZERO(&set);
+    FD_SET(0, &set);
+    timeval timeout{0, 0};
+    int result = select(1, &set, nullptr, nullptr, &timeout);
+    return (result > 0);
+}
+
 void rawMode() {
     tcgetattr(STDIN_FILENO, &ttyOld);    
     tty = ttyOld;
@@ -149,10 +158,28 @@ void gameLoop() {
     }
 }
 
-void inputLoop() {
+void inputAndCollision() {
     while(true) {
+        sleep(2);
         if (end == true) break;
-        direction = getchar();
+        if (checkStdin()) {
+            direction = getchar();
+        }
+        if (enemyVec.size() != 0) {
+            for (Entity &e : enemyVec) {
+                if (e.x == p.x && e.y == p.y) {
+                    end = true;
+                }
+            }
+        } 
+        for (int i = 0; i < pointVec.size(); i++) {
+            if (pointVec[i].x == p.x && pointVec[i].y == p.y) {
+                fuel += 60;
+                pointVec[i].derender();
+                pointVec.erase(pointVec.begin()+i);
+                p.render();
+            }
+        }
     }
 }
 
@@ -275,8 +302,7 @@ char deathScreen() {
 void startGame() {   
     p.render();
     std::thread t1(gameLoop);
-    std::thread t2(inputLoop);
-    checkCollision();
+    inputAndCollision();
     char c = deathScreen();
     if (c == 'C' || c == 'c') return;
     if (c == 'r' || c == 'R') retry();
