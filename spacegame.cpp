@@ -62,6 +62,7 @@ void retry();
 void startGame();
 
 bool checkStdin() {
+    // check if stdin has data
     fd_set set;
     FD_ZERO(&set);
     FD_SET(0, &set);
@@ -111,15 +112,15 @@ void gameLoop() {
     std::uniform_int_distribution<int> pointDistrVert(1, 18);
 
     while(true) {       
-        // player movement loop
         if (end == true) break;
+        // player movement 
         sleep(100);
         fuel -= 3;
         movePlayer(direction);
         if (fuel <= 0) end = true;
 
         if (enemyActivityTimer == 6) {
-            // enemy activity
+            // enemy & fuel activity
             if (end == true) break;
             for (int i = 0; i < enemyVec.size(); i++) {
                 if (enemyVec[i].x == 1) {
@@ -165,28 +166,6 @@ void inputAndCollision() {
         if (checkStdin()) {
             direction = getchar();
         }
-        if (enemyVec.size() != 0) {
-            for (Entity &e : enemyVec) {
-                if (e.x == p.x && e.y == p.y) {
-                    end = true;
-                }
-            }
-        } 
-        for (int i = 0; i < pointVec.size(); i++) {
-            if (pointVec[i].x == p.x && pointVec[i].y == p.y) {
-                fuel += 60;
-                pointVec[i].derender();
-                pointVec.erase(pointVec.begin()+i);
-                p.render();
-            }
-        }
-    }
-}
-
-void checkCollision() {
-    while (true) {
-        if (end == true) break;
-        sleep(1);
         if (enemyVec.size() != 0) {
             for (Entity &e : enemyVec) {
                 if (e.x == p.x && e.y == p.y) {
@@ -297,7 +276,6 @@ char deathScreen() {
     }
     return option;
 }
-
 
 void startGame() {   
     p.render();
