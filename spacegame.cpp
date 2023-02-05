@@ -169,7 +169,7 @@ void gameLoop() {
 
 void inputAndCollision() {
     while(true) {
-        sleep(2);
+        sleep(1);
         if (end == true) break;
         if (checkStdin()) {
             direction = getchar();
