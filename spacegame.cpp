@@ -6,6 +6,7 @@
 #include <random>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
 
 char arena[20][50] =       {{'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M'},
                             {'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'M'},
@@ -85,7 +86,7 @@ void cookedMode() {
 void printArena() {
     printf("\033[2J");
     printf("\033[H");
-    std::cout << "Grab the fuel! (O) | WASD to move | C to quit |"; 
+    std::cout << "Grab the fuel! (O) | WASD to move | Q to quit |"; 
     for (int i = 0; i < 20; i++) {
         std::cout << "\r\n";
         for (int j = 0; j < 50; j++) {
@@ -159,10 +160,10 @@ void gameLoop() {
             enemyActivityTimer = 0;
         }
         enemyActivityTimer++;
+        printArena(); 
         end_time = std::chrono::high_resolution_clock::now();
         sleep_time = 100 - std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
         sleep(sleep_time);
-        printArena(); 
     }
 }
 
@@ -216,7 +217,7 @@ void movePlayer(char c) {
         p.render();
         printArena();
     }
-    if (c == 'c') {
+    if (c == 'q' || c == 'Q') {
         end = true;
         stop = true;
     }
@@ -276,7 +277,7 @@ char deathScreen() {
     while (true) {
         sleep(1);
         int ch = getchar();
-        if (ch == 'c' || ch == 'C' || ch == 'r' || ch == 'R') {
+        if (ch == 'q' || ch == 'Q' || ch == 'r' || ch == 'R') {
             option = ch;
             break;
         }
@@ -289,7 +290,7 @@ void startGame() {
     std::thread t1(gameLoop);
     inputAndCollision();
     char c = deathScreen();
-    if (c == 'C' || c == 'c') return;
+    if (c == 'q' || c == 'Q') return;
     if (c == 'r' || c == 'R') retry();
 }
 
@@ -312,7 +313,13 @@ void retry() {
     startGame();
 }
 
+void sigint_handler(int sig) {
+    end = true;
+    stop = true;
+}
+
 int main() {
+    signal(SIGINT, sigint_handler);
     rawMode();
     startGame();
     cookedMode();
