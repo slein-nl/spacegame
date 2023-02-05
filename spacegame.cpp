@@ -110,14 +110,18 @@ void gameLoop() {
     std::uniform_int_distribution<int> enemyDistr(1, 18);
     std::uniform_int_distribution<int> pointDistr(1, 48);
     std::uniform_int_distribution<int> pointDistrVert(1, 18);
-
+    // time adjustment
+    std::chrono::system_clock::time_point start_time;
+    int sleep_time;
+    std::chrono::system_clock::time_point end_time = std::chrono::high_resolution_clock::now(); 
+    
     while(true) {       
-        if (end == true) break;
+        start_time = std::chrono::high_resolution_clock::now();
         // player movement 
-        sleep(100);
         fuel -= 3;
         movePlayer(direction);
         if (fuel <= 0) end = true;
+        if (end == true) break;
 
         if (enemyActivityTimer == 6) {
             // enemy & fuel activity
@@ -155,6 +159,9 @@ void gameLoop() {
             enemyActivityTimer = 0;
         }
         enemyActivityTimer++;
+        end_time = std::chrono::high_resolution_clock::now();
+        sleep_time = 100 - std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+        sleep(sleep_time);
         printArena(); 
     }
 }
@@ -216,7 +223,7 @@ void movePlayer(char c) {
 }
 
 char deathScreen() {
-    sleep(80);
+    sleep(105);
     if (stop == true) return 'C';
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
