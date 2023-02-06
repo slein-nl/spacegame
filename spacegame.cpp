@@ -114,7 +114,7 @@ void gameLoop() {
     // time adjustment
     std::chrono::system_clock::time_point start_time;
     int sleep_time;
-    std::chrono::system_clock::time_point end_time = std::chrono::high_resolution_clock::now(); 
+    std::chrono::system_clock::time_point end_time;
     
     while(true) {       
         start_time = std::chrono::high_resolution_clock::now();
