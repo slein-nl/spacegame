@@ -289,6 +289,7 @@ void startGame() {
     p.render();
     std::thread t1(gameLoop);
     inputAndCollision();
+    t1.join();
     char c = deathScreen();
     if (c == 'q' || c == 'Q') return;
     if (c == 'r' || c == 'R') retry();
@@ -323,5 +324,7 @@ int main() {
     rawMode();
     startGame();
     cookedMode();
+    printf("\033[2J");
+    printf("\033[H");
     return 0;
 }
