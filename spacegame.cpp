@@ -118,11 +118,11 @@ void gameLoop() {
     
     while(true) {       
         start_time = std::chrono::high_resolution_clock::now();
+        if (fuel <= 0) end = true;
+        if (end == true) break;
         // player movement 
         fuel -= 3;
         movePlayer(direction);
-        if (fuel <= 0) end = true;
-        if (end == true) break;
 
         if (enemyActivityTimer == 6) {
             // enemy & fuel activity
@@ -167,17 +167,22 @@ void gameLoop() {
     }
 }
 
-void inputAndCollision() {
+void inputLoop() {
     while(true) {
         sleep(1);
         if (end == true) break;
         if (checkStdin()) {
             direction = getchar();
         }
-        if (enemyVec.size() != 0) {
+    }
+}
+
+void checkCollision() {
+            if (enemyVec.size() != 0) {
             for (Entity &e : enemyVec) {
                 if (e.x == p.x && e.y == p.y) {
                     end = true;
+                    arena[e.y][e.x] = '#';
                 }
             }
         } 
@@ -189,7 +194,6 @@ void inputAndCollision() {
                 p.render();
             }
         }
-    }
 }
 
 void movePlayer(char c) {
@@ -198,24 +202,28 @@ void movePlayer(char c) {
         p.x++;
         p.render();
         printArena();
+        checkCollision();
     }
     else if (c == 'w' && p.y - 1 != 0 ) {
         p.derender();
         p.y--;
         p.render();
         printArena();
+        checkCollision();
     }
     else if (c == 'a' && p.x - 1 != 0) {
         p.derender();
         p.x--;
         p.render();
         printArena();
+        checkCollision();
     }
     else if (c == 's' && p.y + 1 != 19) {
         p.derender();
         p.y++;
         p.render();
         printArena();
+        checkCollision();
     }
     else if (c == 'q' || c == 'Q') {
         end = true;
@@ -288,7 +296,7 @@ char deathScreen() {
 void startGame() {   
     p.render();
     std::thread t1(gameLoop);
-    inputAndCollision();
+    inputLoop();
     t1.join();
     char c = deathScreen();
     if (c == 'q' || c == 'Q') return;
