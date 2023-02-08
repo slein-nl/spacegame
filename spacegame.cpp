@@ -113,8 +113,8 @@ void gameLoop() {
     std::uniform_int_distribution<int> pointDistrVert(1, 18);
     // time adjustment
     std::chrono::system_clock::time_point start_time;
-    int sleep_time;
     std::chrono::system_clock::time_point end_time;
+    int sleep_time;
     
     while(true) {       
         start_time = std::chrono::high_resolution_clock::now();
