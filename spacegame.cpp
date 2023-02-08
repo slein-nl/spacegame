@@ -109,7 +109,7 @@ void gameLoop() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> enemyDistr(1, 18);
-    std::uniform_int_distribution<int> pointDistr(1, 48);
+    std::uniform_int_distribution<int> pointDistr(1, 46);
     std::uniform_int_distribution<int> pointDistrVert(1, 18);
     // time adjustment
     std::chrono::system_clock::time_point start_time;
@@ -199,25 +199,25 @@ void movePlayer(char c) {
         p.render();
         printArena();
     }
-    if (c == 'w' && p.y - 1 != 0 ) {
+    else if (c == 'w' && p.y - 1 != 0 ) {
         p.derender();
         p.y--;
         p.render();
         printArena();
     }
-    if (c == 'a' && p.x - 1 != 0) {
+    else if (c == 'a' && p.x - 1 != 0) {
         p.derender();
         p.x--;
         p.render();
         printArena();
     }
-    if (c == 's' && p.y + 1 != 19) {
+    else if (c == 's' && p.y + 1 != 19) {
         p.derender();
         p.y++;
         p.render();
         printArena();
     }
-    if (c == 'q' || c == 'Q') {
+    else if (c == 'q' || c == 'Q') {
         end = true;
         stop = true;
     }
@@ -292,7 +292,7 @@ void startGame() {
     t1.join();
     char c = deathScreen();
     if (c == 'q' || c == 'Q') return;
-    if (c == 'r' || c == 'R') retry();
+    else if (c == 'r' || c == 'R') retry();
 }
 
 void retry() {  
