@@ -51,7 +51,7 @@ struct Entity {
 bool stop = false;
 int score = 0;
 int fuel = 300;
-int direction ='d';
+int direction = 'd';
 bool end = false;
 Entity p(15, 15, '@');
 struct termios tty;
@@ -63,7 +63,6 @@ void retry();
 void startGame();
 
 bool checkStdin() {
-    // check if stdin has data
     fd_set set;
     FD_ZERO(&set);
     FD_SET(0, &set);
@@ -138,14 +137,12 @@ void gameLoop() {
                 enemyVec[i].x--;
                 enemyVec[i].render();  
             }
-        
             if (enemyTimer == 1) {
                 enemyVec.push_back(Entity(48, enemyDistr(gen), 'X'));
                 enemyVec.back().render();
                 enemyTimer = 0;
                 enemyTimer++;
             }
-        
             if (pointTimer == 2) {
                 pointVec.push_back(Entity(pointDistr(gen), pointDistrVert(gen), 'O'));
                 pointVec.back().render();
@@ -178,7 +175,7 @@ void inputLoop() {
 }
 
 void checkCollision() {
-            if (enemyVec.size() != 0) {
+        if (enemyVec.size() != 0) {
             for (Entity &e : enemyVec) {
                 if (e.x == p.x && e.y == p.y) {
                     end = true;
