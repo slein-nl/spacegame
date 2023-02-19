@@ -48,10 +48,10 @@ struct Entity {
     }
 };
 
-bool stop = false;
 int score = 0;
 int fuel = 300;
 int direction = 'd';
+bool stop = false;
 bool end = false;
 Entity p(15, 15, '@');
 struct termios tty;
@@ -175,22 +175,22 @@ void inputLoop() {
 }
 
 void checkCollision() {
-        if (enemyVec.size() != 0) {
-            for (Entity &e : enemyVec) {
-                if (e.x == p.x && e.y == p.y) {
-                    end = true;
-                    arena[e.y][e.x] = '#';
-                }
-            }
-        } 
-        for (int i = 0; i < pointVec.size(); i++) {
-            if (pointVec[i].x == p.x && pointVec[i].y == p.y) {
-                fuel += 60;
-                pointVec[i].derender();
-                pointVec.erase(pointVec.begin()+i);
-                p.render();
+    if (enemyVec.size() != 0) {
+        for (Entity &e : enemyVec) {
+            if (e.x == p.x && e.y == p.y) {
+                end = true;
+                arena[e.y][e.x] = '#';
             }
         }
+    } 
+    for (int i = 0; i < pointVec.size(); i++) {
+        if (pointVec[i].x == p.x && pointVec[i].y == p.y) {
+            fuel += 60;
+            pointVec[i].derender();
+            pointVec.erase(pointVec.begin()+i);
+            p.render();
+        }
+    }
 }
 
 void movePlayer(char c) {
