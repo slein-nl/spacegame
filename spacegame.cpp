@@ -230,7 +230,7 @@ void movePlayer(char c) {
 
 char deathScreen() {
     sleep(105);
-    if (stop == true) return 'C';
+    if (stop == true) return 'Q';
     for (int i = 17; i < 31; i++) {
         arena[5][i] = '-';
         arena[15][i] = '-';
