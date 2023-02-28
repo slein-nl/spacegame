@@ -307,15 +307,14 @@ void retry() {
         }
     }
     stop = false;
+    end = false;
     score = 0;
     fuel = 300;
     direction = 'd';
-    p.derender();
     p.x = 15;
     p.y = 15;
     enemyVec.erase(enemyVec.begin(), enemyVec.end());
     pointVec.erase(pointVec.begin(), pointVec.end());
-    end = false;
     startGame();
 }
 
